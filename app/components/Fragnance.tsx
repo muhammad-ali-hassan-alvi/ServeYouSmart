@@ -66,6 +66,14 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
         throw new Error(data.message || 'Failed to add to cart');
       }
 
+      // Dispatch custom event to notify Navbar and other components
+      window.dispatchEvent(new CustomEvent('cartUpdated', {
+        detail: {
+          productId,
+          action: 'add'
+        }
+      }));
+
       toast.success("Item successfully added to cart");
     } catch (err) {
       console.error('Add to cart error:', err);
@@ -111,7 +119,8 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
               key={product._id} 
               className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full"
             >
-              <div className="relative aspect-square w-full">
+              {/* Product Image with Link to Details */}
+              <Link href={`/fragnancedetails/${product._id}`} className="relative aspect-square w-full block">
                 <img
                   src={product.images[0] || '/placeholder-product.jpg'}
                   alt={product.name}
@@ -128,7 +137,7 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                     Only {product.stock} left
                   </div>
                 )}
-              </div>
+              </Link>
 
               <div className="p-5 flex flex-col flex-grow">
                 <div className="mb-2">
@@ -136,9 +145,14 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                     {product.category}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                  {product.name}
-                </h3>
+                
+                {/* Product Name with Link to Details */}
+                <Link href={`/fragnancedetails/${product._id}`}>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-indigo-600 transition-colors">
+                    {product.name}
+                  </h3>
+                </Link>
+                
                 <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
                   {product.description}
                 </p>
@@ -147,48 +161,67 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                     <span className="text-xl font-bold text-gray-900">
                       ${product.price.toFixed(2)}
                     </span>
-                    {product.stock > 0 && (
-                      <button 
-                        onClick={() => addToCart(product._id, product.category)}
-                        disabled={loadingStates[product._id]}
-                        className={`relative inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
-                          loadingStates[product._id] ? 'opacity-75 cursor-not-allowed' : ''
-                        }`}
+                    <div className="flex gap-2">
+                      {/* View Details Button */}
+                      <Link 
+                        href={`/fragnancedetails/${product._id}`}
+                        className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
                       >
-                        {loadingStates[product._id] ? (
-                          <>
-                            <svg
-                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
-                            </svg>
-                            Adding...
-                          </>
-                        ) : (
-                          <>
-                            <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Add to Cart
-                          </>
-                        )}
-                      </button>
-                    )}
+                        <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Details
+                      </Link>
+                      
+                      {/* Add to Cart Button */}
+                      {product.stock > 0 && (
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            addToCart(product._id, product.category);
+                          }}
+                          disabled={loadingStates[product._id]}
+                          className={`relative inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
+                            loadingStates[product._id] ? 'opacity-75 cursor-not-allowed' : ''
+                          }`}
+                        >
+                          {loadingStates[product._id] ? (
+                            <>
+                              <svg
+                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>
+                              Adding...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                              Add
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -196,7 +229,7 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
           ))}
         </div>
 
-        {/* Pagination */}
+        {/* Pagination (unchanged) */}
         {products.length > productsPerPage && (
           <div className="mt-12 flex items-center justify-between border-t border-gray-200 pt-6">
             <div>

@@ -25,7 +25,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
 
   const addToCart = async (productId: string, category: string) => {
     // Validate category
-    if (!['Test', 'Interior', 'Exterior'].includes(category)) {
+    if (!['Test', 'Interior', 'Exterior', 'Product', 'Gadget', 'Fragrance'].includes(category)) {
       setError('Invalid product category');
       return;
     }
@@ -61,9 +61,18 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
         throw new Error(data.message || 'Failed to add to cart');
       }
 
+      // Dispatch cart update event to notify all components
+      window.dispatchEvent(new CustomEvent('cartUpdated', {
+        detail: {
+          productId,
+          category,
+          action: 'add'
+        }
+      }));
+
       // Show success feedback
       console.log('Product added to cart:', data);
-      toast.success("Item Successfully Added to Cart")
+      toast.success("Item Successfully Added to Cart");
       
     } catch (err) {
       console.error('Add to cart error:', err);

@@ -29,16 +29,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   const addToCart = async (productId: string, category: string) => {
     const token = sessionStorage.getItem("token");
     const userString = sessionStorage.getItem("user");
-
+  
     if (!token || !userString) {
       router.push("/login");
       return;
     }
-
+  
     try {
       setLoadingStates((prev) => ({ ...prev, [productId]: true }));
       setError(null);
-
+  
       const user = JSON.parse(userString);
       const response = await fetch("http://localhost:5000/api/cart/items", {
         method: "POST",
@@ -52,13 +52,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
           category,
         }),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(data.message || "Failed to add to cart");
       }
-
+  
+      // Dispatch custom event to notify Navbar
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      
       toast.success("Item added to cart!");
     } catch (err) {
       console.error("Add to cart error:", err);

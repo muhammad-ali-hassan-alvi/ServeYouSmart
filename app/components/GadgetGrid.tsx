@@ -55,9 +55,17 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
         throw new Error(data.message || 'Failed to add to cart');
       }
 
+      // Dispatch cart update event
+      window.dispatchEvent(new CustomEvent('cartUpdated', {
+        detail: {
+          productId,
+          action: 'add'
+        }
+      }));
+
       // Show success feedback
       console.log('Gadget added to cart:', data);
-      toast.success("Item Successfully Added to Cart")
+      toast.success("Item Successfully Added to Cart");
       
     } catch (err) {
       console.error('Add to cart error:', err);
@@ -74,10 +82,10 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Our Best Selling Gadgets Products</h2>
           <Link 
-            href="/products" 
+            href="/gadgets" 
             className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
           >
-            View all products →
+            View all Gadgets →
           </Link>
         </div>
 

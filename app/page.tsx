@@ -52,23 +52,23 @@ export default async function Home() {
         <Banner />
       </div>
 
-      <div className="mt-98 mx-4 sm:mx-6 lg:mx-10">
+      <div className="mt-98 lg:mt-10  mx-4 sm:mx-6 lg:mx-10">
         <ProductGrid products={products} />
       </div>
 
-      <div className="lg:mt-32">
+      <div className="mt-10 lg:mt-32">
         <Choose />
       </div>
 
-      <div className="mt-14 mx-4 sm:mx-6 lg:mx-10">
+      <div className="mt-10 mx-4 sm:mx-6 lg:mx-10">
         <GadgetGrid products={gadgets} />
       </div>
 
-      <div className="mt-14 mx-4 sm:mx-6 lg:mx-10">
+      <div className="mt-10 mx-4 sm:mx-6 lg:mx-10">
         <CustomerTestimonials />
       </div>
 
-      <div className="mt-14 mx-4 sm:mx-6 lg:mx-10">
+      <div className="mt-10 mx-4 sm:mx-6 lg:mx-10">
         <FragnanceGrid products={fragnance} />
       </div>
     </main>
