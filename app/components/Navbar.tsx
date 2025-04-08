@@ -1,30 +1,69 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Moon, Sun, Menu, X, ShoppingCart } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode" // Make sure to install this package
 
 const Navbar = () => {
-  const [theme, setTheme] = useState("light");
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCheckingAdmin, setIsCheckingAdmin] = useState(false);
 
-  // Fetch cart items and set up event listener
+  // Check auth status, admin status, and fetch cart items
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    const checkAdmin = async (token) => {
+      try {
+        setIsCheckingAdmin(true);
+        const decoded = jwtDecode(token);
+        const userId = decoded.id;
+
+        const response = await fetch(`http://localhost:5000/api/users/${userId}?isAdmin=True`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setIsAdmin(userData.isAdmin === true);
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      } finally {
+        setIsCheckingAdmin(false);
+      }
+    };
+
     const fetchCartData = async () => {
       try {
+        if (!token) return;
+        
         const res = await fetch("http://localhost:5000/api/cart", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (res.ok) {
           const data = await res.json();
-          const itemCount = data.items.reduce((sum, item) => sum + item.quantity, 0);
+          const itemCount = data.items.reduce(
+            (sum, item) => sum + item.quantity, 
+            0
+          );
           setCartItemCount(itemCount);
         }
       } catch (error) {
@@ -32,27 +71,38 @@ const Navbar = () => {
       }
     };
 
-    // Initial fetch
-    fetchCartData();
-
-    // Set up event listener for cart updates
-    const handleCartUpdate = () => {
+    if (token) {
+      checkAdmin(token);
       fetchCartData();
-    };
+    }
 
-    // Listen for custom events from other components
-    window.addEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener('cartUpdated', fetchCartData);
 
     return () => {
-      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('cartUpdated', fetchCartData);
     };
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.classList.toggle("dark");
-    localStorage.setItem("theme", newTheme);
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    window.dispatchEvent(new Event('cartUpdated'));
+    router.push('/login');
+  };
+
+  const handleAdminClick = async (e) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      router.push('/login');
+      return;
+    }
+    
+    if (isAdmin) {
+      router.push('/admin');
+    } else {
+      alert('You are not authorized to access the admin panel');
+    }
   };
 
   return (
@@ -63,28 +113,62 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8">
+        <div className="hidden md:flex items-center space-x-6">
           <Link href="/" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
             Home
           </Link>
           <Link href="/about" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
             About
           </Link>
-          <Link href="/services" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
-            Services
+          <Link href="/products" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
+            Products
           </Link>
           <Link href="/contact" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
             Contact
           </Link>
+          
+          {/* Admin Link - Only show if user is admin */}
+          {isAdmin && (
+            <Link href="/admin" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
+              Admin
+            </Link>
+          )}
+
+          {/* Auth Button */}
+          {isLoggedIn ? (
+            <Button 
+              variant="destructive"
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-md"
+            >
+              Logout
+            </Button>
+          ) : (
+            <Link href="/login">
+              <Button 
+                variant="default"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+              >
+                Login
+              </Button>
+            </Link>
+          )}
+
+          {/* Cart Icon */}
+          <Link href="/cart" className="relative ml-4">
+            <Button variant="ghost" size="icon">
+              <ShoppingCart className="w-5 h-5" />
+            </Button>
+            {cartItemCount > 0 && (
+              <span className="absolute top-0 right-0 block w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                {cartItemCount}
+              </span>
+            )}
+          </Link>
         </div>
 
-        {/* Right Section */}
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-          </Button>
-          
-          {/* Cart Icon with Item Count */}
+        {/* Mobile Menu Button */}
+        <div className="flex md:hidden items-center space-x-4">
           <Link href="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="w-5 h-5" />
@@ -95,9 +179,12 @@ const Navbar = () => {
               </span>
             )}
           </Link>
-
-          {/* Mobile Menu Toggle */}
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsOpen(!isOpen)}
+          >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </Button>
         </div>
@@ -106,10 +193,69 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white dark:bg-gray-800 shadow-md py-4">
-          <Link href="/" className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">Home</Link>
-          <Link href="/about" className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">About</Link>
-          <Link href="/services" className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">Services</Link>
-          <Link href="/contact" className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">Contact</Link>
+          <Link 
+            href="/" 
+            className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            onClick={() => setIsOpen(false)}
+          >
+            Home
+          </Link>
+          <Link 
+            href="/about" 
+            className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            onClick={() => setIsOpen(false)}
+          >
+            About
+          </Link>
+          <Link 
+            href="/products" 
+            className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            onClick={() => setIsOpen(false)}
+          >
+            Products
+          </Link>
+          <Link 
+            href="/contact" 
+            className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            onClick={() => setIsOpen(false)}
+          >
+            Contact
+          </Link>
+          
+          {/* Admin Link in Mobile - Only show if user is admin */}
+          {isAdmin && (
+            <Link 
+              href="/admin" 
+              className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => setIsOpen(false)}
+            >
+              Admin
+            </Link>
+          )}
+          
+          <div className="px-6 py-2">
+            {isLoggedIn ? (
+              <Button 
+                variant="destructive"
+                onClick={() => {
+                  handleLogout();
+                  setIsOpen(false);
+                }}
+                className="w-full"
+              >
+                Logout
+              </Button>
+            ) : (
+              <Link href="/login" className="w-full block" onClick={() => setIsOpen(false)}>
+                <Button 
+                  variant="default"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
       )}
     </nav>

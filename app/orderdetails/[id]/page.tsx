@@ -1,6 +1,5 @@
-import React from "react";
-import Login from "../components/Login";
-import Navbar from "../components/Navbar";
+import Navbar from "@/app/components/Navbar";
+import OrderDetailsPage from "../../components/OrderDetailsPage";
 
 const page = () => {
   return (
@@ -9,7 +8,7 @@ const page = () => {
         <Navbar />
       </div>
       <div>
-        <Login />
+        <OrderDetailsPage />
       </div>
     </>
   );

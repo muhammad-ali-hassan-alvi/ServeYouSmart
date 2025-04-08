@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Poppins } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
 import "./globals.css";
+import Footer from "./components/Footer";
 
 // Properly load Poppins font with Next.js
 const poppins = Poppins({
@@ -36,7 +37,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
-        {children}
+        <main>{children}</main>
+        <Footer />
         <Toaster position="top-right" reverseOrder={false} />
       </body>
     </html>
