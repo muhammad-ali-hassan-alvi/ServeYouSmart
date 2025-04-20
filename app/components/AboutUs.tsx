@@ -3,8 +3,10 @@
 import Image from "next/image";
 import { Check, Shield, Truck, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const AboutUs = () => {
+  const router = useRouter()
   return (
     <div className="bg-white dark:bg-gray-900">
       {/* Hero Section */}
@@ -12,9 +14,7 @@ const AboutUs = () => {
         <img
           src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1583&q=80"
           alt="Premium Car Care Products"
-          fill
           className="object-cover"
-          priority
         />
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <div className="text-center px-4">
@@ -197,6 +197,7 @@ const AboutUs = () => {
             <Button
               variant="outline"
               className="border-white text-blue-600 hover:bg-blue-700 hover:text-white px-8 py-4 text-lg"
+              onClick={() => router.push("/contact")}
             >
               Contact Us
             </Button>

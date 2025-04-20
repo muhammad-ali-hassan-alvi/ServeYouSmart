@@ -124,7 +124,7 @@ const AdminOrdersTable = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5" component="h2">
+        <Typography variant="h5" component="h2" className="w-full">
           Orders Management
         </Typography>
         <Box>
