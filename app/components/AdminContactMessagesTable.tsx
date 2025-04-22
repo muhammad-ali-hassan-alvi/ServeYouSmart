@@ -21,8 +21,6 @@ import {
 } from "@mui/material";
 import {
   Refresh,
-  Mail,
-  CheckCircle,
   Delete,
   Visibility,
 } from "@mui/icons-material";
@@ -63,19 +61,19 @@ const AdminContactMessagesTable = () => {
     }
   };
 
-  const handleMarkAsRead = async (messageId) => {
-    try {
-      await axios.get(`http://localhost:5000/api/contact/${messageId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      enqueueSnackbar("Message marked as read", { variant: "success" });
-      fetchMessages();
-    } catch (error) {
-      enqueueSnackbar("Failed to update message status", { variant: "error" });
-    }
-  };
+  // const handleMarkAsRead = async (messageId) => {
+  //   try {
+  //     await axios.get(`http://localhost:5000/api/contact/${messageId}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     enqueueSnackbar("Message marked as read", { variant: "success" });
+  //     fetchMessages();
+  //   } catch (error) {
+  //     enqueueSnackbar("Failed to update message status", { variant: "error" });
+  //   }
+  // };
 
   const handleDeleteMessage = async (messageId) => {
     try {
