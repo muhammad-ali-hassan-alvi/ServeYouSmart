@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import Image from "next/image";
 
 // Reuse the Product type from your original implementation
 type ProductCategory = "Test" | "Interior" | "Exterior" | "Product" | "Gadget" | "Fragnance";

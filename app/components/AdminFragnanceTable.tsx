@@ -24,7 +24,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-hot-toast";
-import Image from "next/image";
 
 interface Fragrance {
   _id: string;

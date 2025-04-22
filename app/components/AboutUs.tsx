@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { Check, Shield, Truck, Zap } from "lucide-react";
+import { Check, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 

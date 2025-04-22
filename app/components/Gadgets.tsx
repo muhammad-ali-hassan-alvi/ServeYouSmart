@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import Image from "next/image";
 
 interface Product {
   _id: string;
