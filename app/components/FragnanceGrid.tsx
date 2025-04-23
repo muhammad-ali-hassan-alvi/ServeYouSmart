@@ -39,7 +39,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
       setLoadingStates((prev) => ({ ...prev, [productId]: true }));
       setError(null);
   
-      const user = JSON.parse(userString);
+      // const user = JSON.parse(userString);
       const response = await fetch("http://localhost:5000/api/cart/items", {
         method: "POST",
         headers: {

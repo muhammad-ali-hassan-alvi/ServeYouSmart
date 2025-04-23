@@ -66,7 +66,7 @@ export default function AdminProductsTable() {
       const data = await response.json();
       setProducts(data.products);
       setPages(data.pages);
-    } catch (error) {
+    } catch  {
       toast.error("Failed to fetch products");
     } finally {
       setLoading(false);
@@ -96,7 +96,7 @@ export default function AdminProductsTable() {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to delete product");
       }
-    } catch (error) {
+    } catch  {
       toast.error("Failed to delete product");
     } finally {
       setDeleteDialogOpen(false);
@@ -157,7 +157,7 @@ export default function AdminProductsTable() {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to add product");
       }
-    } catch (error) {
+    } catch  {
       toast.error("Failed to add product");
     }
   };

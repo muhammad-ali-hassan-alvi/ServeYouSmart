@@ -9,7 +9,7 @@ const ContactUs = () => {
         <div className="bg-gradient-to-r from-purple-500 to-indigo-700 py-40 px-10">
           <div className="text-5xl font-bold text-white">Get in Touch</div>
           <div className="mt-6 max-w-3xl text-xl text-indigo-100">
-            We'd love to hear from you! Send us a message using the form below,
+            We&apos;d love to hear from you! Send us a message using the form below,
             or reach out to us directly.
           </div>
         </div>

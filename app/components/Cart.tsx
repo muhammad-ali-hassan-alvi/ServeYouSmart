@@ -208,8 +208,9 @@ export default function CartPage() {
             Your Cart is Empty
           </h1>
           <p className="text-gray-600 mb-6">
-            Looks like you haven't added any items to your cart yet.
+            Looks like you haven&apos;t added any items to your cart yet.
           </p>
+
           <Link href="/products">
             <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300">
               Continue Shopping

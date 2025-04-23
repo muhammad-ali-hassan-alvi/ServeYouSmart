@@ -13,7 +13,7 @@ const Navbar = () => {
   const [cartItemCount, setCartItemCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isCheckingAdmin, setIsCheckingAdmin] = useState(false);
+  // const [isCheckingAdmin, setIsCheckingAdmin] = useState(false);
 
   // Check auth status, admin status, and fetch cart items
   useEffect(() => {
@@ -22,7 +22,7 @@ const Navbar = () => {
 
     const checkAdmin = async (token) => {
       try {
-        setIsCheckingAdmin(true);
+        // setIsCheckingAdmin(true);
         const decoded = jwtDecode(token);
         const userId = decoded.id;
 

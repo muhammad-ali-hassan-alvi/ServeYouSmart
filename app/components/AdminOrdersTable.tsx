@@ -50,7 +50,7 @@ const AdminOrdersTable = () => {
       });
       setOrders(data || []); // Ensure we always have an array
       setLoading(false);
-    } catch (error) {
+    } catch {
       enqueueSnackbar("Failed to fetch orders", { variant: "error" });
       setLoading(false);
       setOrders([]); // Set to empty array on error
@@ -70,7 +70,7 @@ const AdminOrdersTable = () => {
       );
       enqueueSnackbar(`Order marked as ${status}`, { variant: "success" });
       fetchOrders();
-    } catch (error) {
+    } catch {
       enqueueSnackbar("Failed to update order status", { variant: "error" });
     }
   };

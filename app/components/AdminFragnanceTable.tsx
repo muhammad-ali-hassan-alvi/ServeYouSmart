@@ -66,7 +66,7 @@ export default function AdminFragranceTable() {
       const data = await response.json();
       setFragrances(data.fragrances);
       setPages(data.pages);
-    } catch (error) {
+    } catch{
       toast.error("Failed to fetch fragrances");
     } finally {
       setLoading(false);

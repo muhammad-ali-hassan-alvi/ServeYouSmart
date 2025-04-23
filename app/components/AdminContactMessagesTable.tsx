@@ -9,7 +9,6 @@ import {
   TableRow,
   Paper,
   Button,
-  Chip,
   Typography,
   Box,
   CircularProgress,
@@ -54,7 +53,7 @@ const AdminContactMessagesTable = () => {
       });
       setMessages(data || []);
       setLoading(false);
-    } catch (error) {
+    } catch {
       enqueueSnackbar("Failed to fetch contact messages", { variant: "error" });
       setLoading(false);
       setMessages([]);
@@ -84,7 +83,7 @@ const AdminContactMessagesTable = () => {
       });
       enqueueSnackbar("Message deleted successfully", { variant: "success" });
       fetchMessages();
-    } catch (error) {
+    } catch {
       enqueueSnackbar("Failed to delete message", { variant: "error" });
     }
   };

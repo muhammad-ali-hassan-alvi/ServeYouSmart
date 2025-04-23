@@ -66,7 +66,7 @@ export default function AdminGadgetsTable() {
       const data = await response.json();
       setGadgets(data.gadgets);
       setPages(data.pages);
-    } catch (error) {
+    } catch {
       toast.error("Failed to fetch gadgets");
     } finally {
       setLoading(false);
@@ -96,7 +96,7 @@ export default function AdminGadgetsTable() {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to delete gadget");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete gadget");
     } finally {
       setDeleteDialogOpen(false);
@@ -157,7 +157,7 @@ export default function AdminGadgetsTable() {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to add gadget");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to add gadget");
     }
   };
