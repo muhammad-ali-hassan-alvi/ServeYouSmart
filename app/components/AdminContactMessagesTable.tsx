@@ -77,7 +77,7 @@ const AdminContactMessagesTable = () => {
   //   }
   // };
 
-  const handleDeleteMessage = async (messageId) => {
+  const handleDeleteMessage = async (messageId: string) => {
     try {
       await axios.delete(`http://localhost:5000/api/contact/${messageId}`, {
         headers: {
