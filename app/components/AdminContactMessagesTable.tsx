@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -37,19 +37,17 @@ const AdminContactMessagesTable = () => {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+  // useEffect(() => {
+  //   fetchMessages();
+  // }, []);
 
   const token = sessionStorage.getItem("token");
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await axios.get("http://localhost:5000/api/contact", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setMessages(data || []);
       setLoading(false);
@@ -58,7 +56,12 @@ const AdminContactMessagesTable = () => {
       setLoading(false);
       setMessages([]);
     }
-  };
+  }, [token, enqueueSnackbar]);
+  
+  useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
+  
 
   // const handleMarkAsRead = async (messageId) => {
   //   try {
