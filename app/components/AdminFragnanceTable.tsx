@@ -96,7 +96,7 @@ export default function AdminFragranceTable() {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to delete fragrance");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete fragrance");
     } finally {
       setDeleteDialogOpen(false);
@@ -157,7 +157,7 @@ export default function AdminFragranceTable() {
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to add fragrance");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to add fragrance");
     }
   };

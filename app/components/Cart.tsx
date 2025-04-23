@@ -65,9 +65,14 @@ export default function CartPage() {
 
       const data = await response.json();
       setCart(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching cart:", error);
-      toast.error(error.message || "Failed to load your cart");
+
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to load your cart");
+      } else {
+        toast.error("Failed to load your cart");
+      }
     } finally {
       setLoading(false);
     }
@@ -115,9 +120,14 @@ export default function CartPage() {
 
       await fetchCart(); // Fetch updated cart after successful update
       toast.success("Quantity updated successfully");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating quantity:", error);
-      toast.error(error.message || "Failed to update quantity");
+
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to update quantity");
+      } else {
+        toast.error("An unknown error occurred");
+      }
     } finally {
       setUpdatingItems((prev) => ({ ...prev, [productId]: false }));
     }
@@ -149,9 +159,14 @@ export default function CartPage() {
 
       await fetchCart();
       toast.success("Item removed from cart");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error removing item:", error);
-      toast.error(error.message || "Failed to remove item");
+
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to remove item");
+      } else {
+        toast.error("Failed to remove item");
+      }
     } finally {
       setUpdatingItems((prev) => ({ ...prev, [productId]: false }));
     }

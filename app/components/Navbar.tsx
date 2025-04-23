@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { jwtDecode } from "jwt-decode" // Make sure to install this package
+import { jwtDecode } from "jwt-decode"; // Make sure to install this package
 
 const Navbar = () => {
   const router = useRouter();
@@ -26,11 +26,14 @@ const Navbar = () => {
         const decoded = jwtDecode(token);
         const userId = decoded.id;
 
-        const response = await fetch(`http://localhost:5000/api/users/${userId}?isAdmin=True`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        const response = await fetch(
+          `http://localhost:5000/api/users/${userId}?isAdmin=True`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
 
         if (response.ok) {
           const userData = await response.json();
@@ -39,7 +42,7 @@ const Navbar = () => {
           setIsAdmin(false);
         }
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        console.error("Error checking admin status:", error);
         setIsAdmin(false);
       } finally {
         setIsCheckingAdmin(false);
@@ -49,7 +52,7 @@ const Navbar = () => {
     const fetchCartData = async () => {
       try {
         if (!token) return;
-        
+
         const res = await fetch("http://localhost:5000/api/cart", {
           method: "GET",
           headers: {
@@ -61,7 +64,7 @@ const Navbar = () => {
         if (res.ok) {
           const data = await res.json();
           const itemCount = data.items.reduce(
-            (sum, item) => sum + item.quantity, 
+            (sum, item) => sum + item.quantity,
             0
           );
           setCartItemCount(itemCount);
@@ -76,10 +79,10 @@ const Navbar = () => {
       fetchCartData();
     }
 
-    window.addEventListener('cartUpdated', fetchCartData);
+    window.addEventListener("cartUpdated", fetchCartData);
 
     return () => {
-      window.removeEventListener('cartUpdated', fetchCartData);
+      window.removeEventListener("cartUpdated", fetchCartData);
     };
   }, []);
 
@@ -87,56 +90,74 @@ const Navbar = () => {
     sessionStorage.removeItem("token");
     setIsLoggedIn(false);
     setIsAdmin(false);
-    window.dispatchEvent(new Event('cartUpdated'));
-    router.push('/login');
+    window.dispatchEvent(new Event("cartUpdated"));
+    router.push("/login");
   };
 
   const handleAdminClick = async (e) => {
     e.preventDefault();
     if (!isLoggedIn) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
-    
+
     if (isAdmin) {
-      router.push('/admin');
+      router.push("/admin");
     } else {
-      alert('You are not authorized to access the admin panel');
+      alert("You are not authorized to access the admin panel");
     }
   };
 
   return (
     <nav className="fixed top-0 w-full bg-white dark:bg-gray-900 shadow-md z-50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white">
+        <Link
+          href="/"
+          className="text-2xl font-bold text-gray-900 dark:text-white"
+        >
           Serves you Smart
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
+          <Link
+            href="/"
+            className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition"
+          >
             Home
           </Link>
-          <Link href="/about" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
+          <Link
+            href="/about"
+            className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition"
+          >
             About
           </Link>
-          <Link href="/products" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
+          <Link
+            href="/products"
+            className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition"
+          >
             Products
           </Link>
-          <Link href="/contact" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
+          <Link
+            href="/contact"
+            className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition"
+          >
             Contact
           </Link>
-          
+
           {/* Admin Link - Only show if user is admin */}
           {isAdmin && (
-            <Link href="/admin" className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition">
+            <button
+              onClick={handleAdminClick}
+              className="text-gray-800 dark:text-gray-300 hover:text-blue-500 transition"
+            >
               Admin
-            </Link>
+            </button>
           )}
 
           {/* Auth Button */}
           {isLoggedIn ? (
-            <Button 
+            <Button
               variant="destructive"
               onClick={handleLogout}
               className="px-4 py-2 rounded-md"
@@ -145,7 +166,7 @@ const Navbar = () => {
             </Button>
           ) : (
             <Link href="/login">
-              <Button 
+              <Button
                 variant="default"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
               >
@@ -179,10 +200,10 @@ const Navbar = () => {
               </span>
             )}
           </Link>
-          
-          <Button 
-            variant="ghost" 
-            size="icon" 
+
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -193,49 +214,51 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white dark:bg-gray-800 shadow-md py-4">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             onClick={() => setIsOpen(false)}
           >
             Home
           </Link>
-          <Link 
-            href="/about" 
+          <Link
+            href="/about"
             className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             onClick={() => setIsOpen(false)}
           >
             About
           </Link>
-          <Link 
-            href="/products" 
+          <Link
+            href="/products"
             className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             onClick={() => setIsOpen(false)}
           >
             Products
           </Link>
-          <Link 
-            href="/contact" 
+          <Link
+            href="/contact"
             className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             onClick={() => setIsOpen(false)}
           >
             Contact
           </Link>
-          
+
           {/* Admin Link in Mobile - Only show if user is admin */}
           {isAdmin && (
-            <Link 
-              href="/admin" 
-              className="block px-6 py-2 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-              onClick={() => setIsOpen(false)}
+            <button
+              onClick={(e) => {
+                handleAdminClick(e);
+                setIsOpen(false);
+              }}
+              className="block px-6 py-2 text-left w-full text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             >
               Admin
-            </Link>
+            </button>
           )}
-          
+
           <div className="px-6 py-2">
             {isLoggedIn ? (
-              <Button 
+              <Button
                 variant="destructive"
                 onClick={() => {
                   handleLogout();
@@ -246,8 +269,12 @@ const Navbar = () => {
                 Logout
               </Button>
             ) : (
-              <Link href="/login" className="w-full block" onClick={() => setIsOpen(false)}>
-                <Button 
+              <Link
+                href="/login"
+                className="w-full block"
+                onClick={() => setIsOpen(false)}
+              >
+                <Button
                   variant="default"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
