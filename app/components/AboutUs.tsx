@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 const AboutUs = () => {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <div className="bg-white dark:bg-gray-900">
       {/* Hero Section */}
@@ -21,8 +21,8 @@ const AboutUs = () => {
               Driven by Passion, Defined by Quality
             </h1>
             <p className="text-xl text-gray-200 max-w-2xl mx-auto">
-              Revolutionizing car care with innovative products that make vehicle
-              maintenance effortless and enjoyable.
+              Revolutionizing car care with innovative products that make
+              vehicle maintenance effortless and enjoyable.
             </p>
           </div>
         </div>
@@ -45,16 +45,16 @@ const AboutUs = () => {
               Our Story
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Serve You Smart was born from a simple idea: car care shouldn't be
-              complicated. Founded in 2024 by automotive enthusiasts, we set out
-              to create products that combine cutting-edge technology with
-              user-friendly designs.
+              Serve You Smart was born from a simple idea: car care
+              shouldn&apos;t be complicated. Founded in 2024 by automotive
+              enthusiasts, we set out to create products that combine
+              cutting-edge technology with user-friendly designs.
             </p>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               What started as a small garage operation has grown into a trusted
               brand serving thousands of car owners nationwide. Our passion for
-              vehicles drives us to innovate constantly, ensuring your car always
-              looks and feels its best.
+              vehicles drives us to innovate constantly, ensuring your car
+              always looks and feels its best.
             </p>
             <Button variant="default" className="bg-blue-600 hover:bg-blue-700">
               Meet Our Team
