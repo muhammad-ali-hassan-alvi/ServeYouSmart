@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback  } from "react";
 import {
   Table,
   TableBody,
@@ -24,23 +24,30 @@ import { format } from "date-fns";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
 
+interface Order {
+  _id: string;
+  user: {
+    name: string;
+    email: string;
+  };
+  items: any[]; // You might want to create a proper interface for items
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+}
+
 const AdminOrdersTable = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const { enqueueSnackbar } = useSnackbar();
-
   const router = useRouter();
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   const token = sessionStorage.getItem("token");
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await axios.get("http://localhost:5000/api/orders/all", {
@@ -48,16 +55,20 @@ const AdminOrdersTable = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setOrders(data || []); // Ensure we always have an array
+      setOrders(data || []);
       setLoading(false);
     } catch {
       enqueueSnackbar("Failed to fetch orders", { variant: "error" });
       setLoading(false);
-      setOrders([]); // Set to empty array on error
+      setOrders([]);
     }
-  };
+  }, [token, enqueueSnackbar]);
 
-  const handleUpdateStatus = async (orderId, status) => {
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const handleUpdateStatus = async (orderId: string, status: string) => {
     try {
       await axios.put(
         `/api/orders/${orderId}/status`,
@@ -75,11 +86,11 @@ const AdminOrdersTable = () => {
     }
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -99,7 +110,7 @@ const AdminOrdersTable = () => {
     rowsPerPage -
     Math.min(rowsPerPage, filteredOrders.length - page * rowsPerPage);
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
         return "success";
