@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Image from "next/image";
 import Link from "next/link";
 
 type ProductCategory = "Test" | "Interior" | "Exterior" | "Product" | "Gadget" | "Fragnance";
@@ -223,7 +224,7 @@ export default function FragranceDetailPage() {
                       : "border-transparent"
                   }`}
                 >
-                  <img
+                  <Image
                     src={image}
                     alt={`${product.name} view ${index + 1}`}
                     width={64}
@@ -235,13 +236,12 @@ export default function FragranceDetailPage() {
             </div>
 
             <div className="flex-1 bg-white rounded-lg overflow-hidden shadow">
-              <img
+              <Image
                 src={product.images[selectedImage]}
                 alt={product.name}
                 width={800}
                 height={800}
                 className="w-full h-full object-cover"
-                priority
               />
             </div>
           </div>
