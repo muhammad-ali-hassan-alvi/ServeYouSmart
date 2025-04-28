@@ -228,7 +228,7 @@ const AdminContactMessagesTable = () => {
                     <TableCell align="center">
                       <Box sx={{ display: "flex", gap: 1 }}>
                         <Tooltip
-                          fontSize="small"
+                          // fontSize="small"
                           title="View Message Details"
                           className="mt-2 cursor-pointer"
                         >
