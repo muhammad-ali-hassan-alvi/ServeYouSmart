@@ -30,12 +30,11 @@ interface Order {
     name: string;
     email: string;
   };
-  items: any[]; // You might want to create a proper interface for items
+  items: Array<unknown>;
   totalPrice: number;
   status: string;
   createdAt: string;
 }
-
 const AdminOrdersTable = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
