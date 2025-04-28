@@ -18,24 +18,33 @@ import {
   TextField,
   Avatar,
 } from "@mui/material";
-import {
-  Refresh,
-  Delete,
-  Visibility,
-} from "@mui/icons-material";
+import { Refresh, Delete, Visibility } from "@mui/icons-material";
 import axios from "axios";
 import { format } from "date-fns";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
 
+interface ContactMessage {
+  _id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: string;
+  // Add other properties if needed
+}
+
+// Then update your useState to use this type
+
 const AdminContactMessagesTable = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+
 
   // useEffect(() => {
   //   fetchMessages();
@@ -57,11 +66,10 @@ const AdminContactMessagesTable = () => {
       setMessages([]);
     }
   }, [token, enqueueSnackbar]);
-  
+
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
-  
 
   // const handleMarkAsRead = async (messageId) => {
   //   try {
@@ -91,11 +99,14 @@ const AdminContactMessagesTable = () => {
     }
   };
 
-  const handleChangePage = (event, newPage) => {
+  // Add these type definitions for the event handlers
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
