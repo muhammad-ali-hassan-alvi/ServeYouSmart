@@ -135,14 +135,12 @@ export default function ProductDetailsPage() {
       setAddingToCart(true);
       setError(null); // Clear previous errors
 
-      const body: Record<string, any> = { // Build body dynamically
+      const body: Record<string, any> = {
         productId: product._id,
         quantity: quantity,
-        // Only include color/size if they are available and selected
+        category: product.category, // Add this required field
         ...(selectedColor && { color: selectedColor }),
         ...(selectedSize && { size: selectedSize }),
-         // Include category if needed by backend
-        // category: product.category,
       };
 
       const response = await fetch("http://localhost:5000/api/cart/items", {
