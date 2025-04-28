@@ -31,6 +31,14 @@ interface Product {
   reviews?: number;
 }
 
+interface CartItemBody {
+  productId: string;
+  quantity: number;
+  category: ProductCategory;
+  color?: string;
+  size?: string;
+}
+
 export default function ProductDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -65,7 +73,7 @@ export default function ProductDetailsPage() {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
           } catch (parseError) {
-             console.error("Failed to parse error response:", parseError)
+            console.error("Failed to parse error response:", parseError);
           }
           throw new Error(errorMessage);
         }
@@ -77,9 +85,9 @@ export default function ProductDetailsPage() {
         if (data.images?.length > 0) setSelectedImage(0); // Ensure image index is valid
         if (data.colors?.length) setSelectedColor(data.colors[0]);
         if (data.sizes?.length) setSelectedSize(data.sizes[0]);
-
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to load product";
+        const message =
+          err instanceof Error ? err.message : "Failed to load product";
         console.error("Fetch product error:", err);
         setError(message);
         toast.error(message);
@@ -89,15 +97,14 @@ export default function ProductDetailsPage() {
     };
 
     // Only fetch if id is a non-empty string
-    if (id && typeof id === 'string') {
+    if (id && typeof id === "string") {
       fetchProduct();
     } else if (!id) {
-        // Handle case where id is missing or invalid early
-        setError("Invalid product ID.");
-        setLoading(false);
-        toast.error("Invalid product ID.");
+      // Handle case where id is missing or invalid early
+      setError("Invalid product ID.");
+      setLoading(false);
+      toast.error("Invalid product ID.");
     }
-
   }, [id]); // Dependency array includes id
 
   const addToCart = async () => {
@@ -106,39 +113,38 @@ export default function ProductDetailsPage() {
     const token = sessionStorage.getItem("token");
     if (!token) {
       toast.error("Please log in to add items to your cart.");
-      router.push("/login?redirect=/products/" + id); // Redirect back after login
+      router.push("/login?redirect=/products/" + id);
       return;
     }
 
     // Basic validation before sending
     if (product.colors?.length && !selectedColor) {
-        toast.error("Please select a color.");
-        return;
+      toast.error("Please select a color.");
+      return;
     }
-     if (product.sizes?.length && !selectedSize) {
-        toast.error("Please select a size.");
-        return;
+    if (product.sizes?.length && !selectedSize) {
+      toast.error("Please select a size.");
+      return;
     }
-     if (quantity > product.stock) {
-         toast.error(`Only ${product.stock} items available.`);
-         setQuantity(product.stock); // Adjust quantity if needed
-         return;
-     }
-      if (quantity <= 0) {
-         toast.error(`Quantity must be at least 1.`);
-         setQuantity(1); // Adjust quantity if needed
-         return;
-     }
-
+    if (quantity > product.stock) {
+      toast.error(`Only ${product.stock} items available.`);
+      setQuantity(product.stock);
+      return;
+    }
+    if (quantity <= 0) {
+      toast.error(`Quantity must be at least 1.`);
+      setQuantity(1);
+      return;
+    }
 
     try {
       setAddingToCart(true);
-      setError(null); // Clear previous errors
+      setError(null);
 
-      const body: Record<string, any> = {
+      const body: CartItemBody = {
         productId: product._id,
         quantity: quantity,
-        category: product.category, // Add this required field
+        category: product.category,
         ...(selectedColor && { color: selectedColor }),
         ...(selectedSize && { size: selectedSize }),
       };
@@ -169,9 +175,9 @@ export default function ProductDetailsPage() {
       );
 
       toast.success(`${product.name} added to cart!`);
-
     } catch (err) {
-      const message = err instanceof Error ? err.message : "An unexpected error occurred";
+      const message =
+        err instanceof Error ? err.message : "An unexpected error occurred";
       console.error("Add to cart error:", err);
       setError(message); // Set error state for potential display
       toast.error(message);
@@ -199,7 +205,8 @@ export default function ProductDetailsPage() {
             Error Loading Product
           </h1>
           <p className="text-gray-600 mb-6">
-            {error || "The product you are looking for could not be found or loaded."}
+            {error ||
+              "The product you are looking for could not be found or loaded."}
           </p>
           <Link
             href="/products"
@@ -223,21 +230,36 @@ export default function ProductDetailsPage() {
         <nav className="flex" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li>
-              <Link href="/" className="hover:text-gray-700">Home</Link>
+              <Link href="/" className="hover:text-gray-700">
+                Home
+              </Link>
             </li>
-            <li><span className="mx-2">/</span></li>
             <li>
-              <Link href="/products" className="hover:text-gray-700">Products</Link>
+              <span className="mx-2">/</span>
             </li>
-             {product.category && ( // Only show category if it exists
-                <>
-                 <li><span className="mx-2">/</span></li>
-                 <li>
-                    <Link href={`/products?category=${product.category}`} className="hover:text-gray-700">{product.category}</Link>
-                 </li>
-                </>
-             )}
-            <li><span className="mx-2">/</span></li>
+            <li>
+              <Link href="/products" className="hover:text-gray-700">
+                Products
+              </Link>
+            </li>
+            {product.category && ( // Only show category if it exists
+              <>
+                <li>
+                  <span className="mx-2">/</span>
+                </li>
+                <li>
+                  <Link
+                    href={`/products?category=${product.category}`}
+                    className="hover:text-gray-700"
+                  >
+                    {product.category}
+                  </Link>
+                </li>
+              </>
+            )}
+            <li>
+              <span className="mx-2">/</span>
+            </li>
             <li aria-current="page">
               <span className="text-gray-700 font-medium">{product.name}</span>
             </li>
@@ -250,46 +272,46 @@ export default function ProductDetailsPage() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
           {/* Product images */}
           <div className="flex flex-col-reverse sm:flex-row gap-4">
-             {/* Thumbnails (Vertical for larger screens) */}
+            {/* Thumbnails (Vertical for larger screens) */}
             {product.images && product.images.length > 1 && (
-                 <div className="flex flex-row sm:flex-col space-x-2 sm:space-x-0 sm:space-y-4 justify-center sm:justify-start mt-4 sm:mt-0 sm:mr-4">
-                    {product.images.map((image, index) => (
-                        <button
-                        key={index}
-                        onClick={() => setSelectedImage(index)}
-                        className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 ${
-                            selectedImage === index
-                            ? "border-indigo-500 ring-2 ring-indigo-300 ring-offset-1" // Enhanced selection indicator
-                            : "border-gray-200 hover:border-gray-400"
-                        }`}
-                        >
-                        <Image
-                            src={image}
-                            alt={`${product.name} view ${index + 1}`}
-                            width={64}
-                            height={64}
-                            className="w-full h-full object-cover"
-                        />
-                        </button>
-                    ))}
-                </div>
+              <div className="flex flex-row sm:flex-col space-x-2 sm:space-x-0 sm:space-y-4 justify-center sm:justify-start mt-4 sm:mt-0 sm:mr-4">
+                {product.images.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 ${
+                      selectedImage === index
+                        ? "border-indigo-500 ring-2 ring-indigo-300 ring-offset-1" // Enhanced selection indicator
+                        : "border-gray-200 hover:border-gray-400"
+                    }`}
+                  >
+                    <Image
+                      src={image}
+                      alt={`${product.name} view ${index + 1}`}
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
             )}
 
             {/* Main image */}
             <div className="flex-1 bg-white rounded-lg overflow-hidden shadow aspect-square">
               {product.images && product.images.length > 0 ? (
-                 <Image
-                    src={product.images[selectedImage]}
-                    alt={product.name}
-                    width={800} // Provide appropriate base width/height for aspect ratio
-                    height={800}
-                    className="w-full h-full object-cover"
-                    priority // Prioritize loading the main image
+                <Image
+                  src={product.images[selectedImage]}
+                  alt={product.name}
+                  width={800} // Provide appropriate base width/height for aspect ratio
+                  height={800}
+                  className="w-full h-full object-cover"
+                  priority // Prioritize loading the main image
                 />
               ) : (
                 // Placeholder if no images
                 <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                    No Image Available
+                  No Image Available
                 </div>
               )}
             </div>
@@ -306,7 +328,7 @@ export default function ProductDetailsPage() {
               <h2 className="sr-only">Product information</h2>
               <div className="flex items-center justify-between">
                 {/* Rating display */}
-                {typeof product.rating === 'number' && product.rating > 0 ? (
+                {typeof product.rating === "number" && product.rating > 0 ? (
                   <div className="flex items-center">
                     <div className="flex items-center">
                       {[0, 1, 2, 3, 4].map((star) => (
@@ -327,20 +349,26 @@ export default function ProductDetailsPage() {
                         </svg>
                       ))}
                     </div>
-                    {typeof product.reviews === 'number' && (
-                       <span className="ml-2 text-sm text-gray-500">
-                         ({product.reviews} reviews)
-                       </span>
+                    {typeof product.reviews === "number" && (
+                      <span className="ml-2 text-sm text-gray-500">
+                        ({product.reviews} reviews)
+                      </span>
                     )}
                   </div>
                 ) : (
-                    <span className="text-sm text-gray-500">No reviews yet</span>
+                  <span className="text-sm text-gray-500">No reviews yet</span>
                 )}
 
                 {/* Stock Status */}
-                 <span className={`text-sm font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
-                 </span>
+                <span
+                  className={`text-sm font-medium ${
+                    product.stock > 0 ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {product.stock > 0
+                    ? `${product.stock} in stock`
+                    : "Out of stock"}
+                </span>
               </div>
             </div>
 
@@ -348,15 +376,18 @@ export default function ProductDetailsPage() {
             <div className="mt-4">
               <p className="text-3xl font-bold text-gray-900">
                 {/* Handle discount price if available */}
-                {typeof product.discountPrice === 'number' && product.discountPrice < product.price ? (
-                    <>
-                        <span className="text-red-600">${product.discountPrice.toFixed(2)}</span>
-                        <span className="ml-2 text-xl font-medium text-gray-500 line-through">
-                            ${product.price.toFixed(2)}
-                        </span>
-                    </>
+                {typeof product.discountPrice === "number" &&
+                product.discountPrice < product.price ? (
+                  <>
+                    <span className="text-red-600">
+                      ${product.discountPrice.toFixed(2)}
+                    </span>
+                    <span className="ml-2 text-xl font-medium text-gray-500 line-through">
+                      ${product.price.toFixed(2)}
+                    </span>
+                  </>
                 ) : (
-                    <span>${product.price.toFixed(2)}</span>
+                  <span>${product.price.toFixed(2)}</span>
                 )}
               </p>
             </div>
@@ -386,7 +417,12 @@ export default function ProductDetailsPage() {
                 {/* Color picker */}
                 {product.colors && product.colors.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900">Color: <span className="font-semibold">{selectedColor || 'Select a color'}</span></h3>
+                    <h3 className="text-sm font-medium text-gray-900">
+                      Color:{" "}
+                      <span className="font-semibold">
+                        {selectedColor || "Select a color"}
+                      </span>
+                    </h3>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {product.colors.map((color) => (
                         <button
@@ -394,19 +430,30 @@ export default function ProductDetailsPage() {
                           type="button"
                           onClick={() => setSelectedColor(color)}
                           className={`relative w-8 h-8 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                            selectedColor === color ? 'ring-2 ring-offset-1 ring-indigo-500' : ''
+                            selectedColor === color
+                              ? "ring-2 ring-offset-1 ring-indigo-500"
+                              : ""
                           }`}
                           style={{ backgroundColor: color }} // Direct style for color background
                           aria-label={`Select color ${color}`}
                         >
-                            {/* Optional: Add a checkmark for selected color */}
-                            {selectedColor === color && (
-                                <span className="absolute inset-0 flex items-center justify-center">
-                                    <svg className="h-5 w-5 text-white mix-blend-difference" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                </span>
-                            )}
+                          {/* Optional: Add a checkmark for selected color */}
+                          {selectedColor === color && (
+                            <span className="absolute inset-0 flex items-center justify-center">
+                              <svg
+                                className="h-5 w-5 text-white mix-blend-difference"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </span>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -417,7 +464,12 @@ export default function ProductDetailsPage() {
                 {product.sizes && product.sizes.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-900">Size: <span className="font-semibold">{selectedSize || 'Select a size'}</span></h3>
+                      <h3 className="text-sm font-medium text-gray-900">
+                        Size:{" "}
+                        <span className="font-semibold">
+                          {selectedSize || "Select a size"}
+                        </span>
+                      </h3>
                       {/* Optional Size Guide Link */}
                       {/* <button type="button" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">Size guide</button> */}
                     </div>
@@ -432,7 +484,11 @@ export default function ProductDetailsPage() {
                             selectedSize === size
                               ? "bg-indigo-600 text-white border-transparent"
                               : "bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
-                          } ${product.stock <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`} // Added disabled style
+                          } ${
+                            product.stock <= 0
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`} // Added disabled style
                         >
                           {size}
                         </button>
@@ -440,27 +496,40 @@ export default function ProductDetailsPage() {
                     </div>
                   </div>
                 )}
-              </div> {/* End options container */}
-
+              </div>{" "}
+              {/* End options container */}
               {/* Quantity selector */}
               <div className="mt-8">
-                <label htmlFor="quantity" className="block text-sm font-medium text-gray-900">Quantity</label>
-                <div className="mt-1 flex rounded-md shadow-sm" style={{ maxWidth: '150px' }}>
+                <label
+                  htmlFor="quantity"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  Quantity
+                </label>
+                <div
+                  className="mt-1 flex rounded-md shadow-sm"
+                  style={{ maxWidth: "150px" }}
+                >
                   <button
                     type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1 || product.stock <= 0}
                     className="relative inline-flex items-center justify-center px-3 py-2 border border-gray-300 bg-gray-50 text-sm font-medium text-gray-500 rounded-l-md hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Decrease quantity"
-                  > - </button>
+                  >
+                    {" "}
+                    -{" "}
+                  </button>
                   <input
                     type="number" // Use type="text" and pattern="[0-9]*" for better mobile input if needed
                     inputMode="numeric" // Helps mobile keyboards
                     id="quantity"
                     value={quantity}
                     onChange={(e) => {
-                        const val = parseInt(e.target.value);
-                        setQuantity(isNaN(val) || val < 1 ? 1 : Math.min(val, product.stock));
+                      const val = parseInt(e.target.value);
+                      setQuantity(
+                        isNaN(val) || val < 1 ? 1 : Math.min(val, product.stock)
+                      );
                     }}
                     className="block w-full text-center border-t border-b border-gray-300 py-2 px-1 text-sm focus:ring-indigo-500 focus:border-indigo-500"
                     min="1"
@@ -470,30 +539,56 @@ export default function ProductDetailsPage() {
                   />
                   <button
                     type="button"
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    onClick={() =>
+                      setQuantity(Math.min(product.stock, quantity + 1))
+                    }
                     disabled={quantity >= product.stock || product.stock <= 0}
                     className="relative inline-flex items-center justify-center px-3 py-2 border border-gray-300 bg-gray-50 text-sm font-medium text-gray-500 rounded-r-md hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                     aria-label="Increase quantity"
-                 > + </button>
+                    aria-label="Increase quantity"
+                  >
+                    {" "}
+                    +{" "}
+                  </button>
                 </div>
-                 {product.stock > 0 && product.stock <= 5 && (
-                      <p className="mt-2 text-sm text-yellow-600">Only {product.stock} left in stock!</p>
-                 )}
+                {product.stock > 0 && product.stock <= 5 && (
+                  <p className="mt-2 text-sm text-yellow-600">
+                    Only {product.stock} left in stock!
+                  </p>
+                )}
               </div>
-
               {/* Add to cart button */}
               <div className="mt-8 flex gap-4">
                 <button
                   type="button" // Changed from submit as it doesn't submit a form
                   onClick={addToCart}
-                  disabled={product.stock <= 0 || addingToCart || quantity > product.stock}
+                  disabled={
+                    product.stock <= 0 ||
+                    addingToCart ||
+                    quantity > product.stock
+                  }
                   className={`flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition ease-in-out duration-150`}
                 >
                   {addingToCart ? (
                     <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       Adding...
                     </>
@@ -503,7 +598,7 @@ export default function ProductDetailsPage() {
                     "Out of stock"
                   )}
                 </button>
-                 {/* Wishlist Button (Optional) */}
+                {/* Wishlist Button (Optional) */}
                 {/* <button type="button" className="p-3 rounded-md border border-gray-300 bg-white text-gray-400 hover:bg-gray-50 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -514,7 +609,6 @@ export default function ProductDetailsPage() {
             </form>
 
             {/* Add more sections like Specifications, Reviews here if needed */}
-
           </div>
         </div>
       </main>
