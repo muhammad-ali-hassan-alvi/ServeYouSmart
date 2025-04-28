@@ -13,6 +13,15 @@ interface MyTokenPayload extends JwtPayload {
   // Add other claims if they exist, e.g., isAdmin: boolean;
 }
 
+// Define a type for cart items for better safety within reduce
+type CartItem = {
+    // Make quantity optional and allow string/number as it's cast later
+    quantity?: number | string | null;
+    // Add other properties if needed for typing 'item' more accurately
+    // productId?: string;
+    // name?: string;
+};
+
 const Navbar = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -27,61 +36,41 @@ const Navbar = () => {
     setIsLoggedIn(!!token);
 
     // --- Function to check admin status ---
-    // Defined inside useEffect so it closes over state setters
-    // Parameter 'token' is explicitly typed as string
     const checkAdmin = async (token: string) => {
-      // Prevent redundant checks
       if (isCheckingAdmin) return;
-
-      setIsCheckingAdmin(true); // Start loading state
+      setIsCheckingAdmin(true);
       try {
-        const decoded = jwtDecode<MyTokenPayload>(token); // Use generic for typed payload
-        const userId = decoded?.id; // Safely access user ID
-
+        const decoded = jwtDecode<MyTokenPayload>(token);
+        const userId = decoded?.id;
         if (!userId) {
           console.error("User ID not found in token payload.");
-          setIsAdmin(false); // Assume not admin if ID is missing
-          return; // Exit early
+          setIsAdmin(false);
+          return;
         }
-
-        // Fetch user data using the ID from the token
-        // Ensure your backend API endpoint /api/users/:userId returns user details including isAdmin
         const response = await fetch(
-          `http://localhost:5000/api/users/${userId}`, // Adjust URL if needed
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Authenticate the request
-            },
-          }
+          `http://localhost:5000/api/users/${userId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-
         if (response.ok) {
           const userData = await response.json();
-          // Check if userData exists and the isAdmin property is explicitly true
           setIsAdmin(userData && userData.isAdmin === true);
         } else {
-          console.error(
-            "Failed to fetch user data for admin check:",
-            response.status,
-            response.statusText
-          );
-          setIsAdmin(false); // Assume not admin if fetch fails
+          console.error("Failed to fetch user data for admin check:", response.status, response.statusText);
+          setIsAdmin(false);
         }
       } catch (error) {
         console.error("Error decoding token or checking admin status:", error);
-        setIsAdmin(false); // Assume not admin on any error
+        setIsAdmin(false);
       } finally {
-        setIsCheckingAdmin(false); // Always reset loading state
+        setIsCheckingAdmin(false);
       }
     };
 
     // --- Function to fetch cart data ---
-    // Defined inside useEffect
     const fetchCartData = async () => {
-      // Re-check token within the async function, as it might have changed
       const currentToken = sessionStorage.getItem("token");
       if (!currentToken) {
-        setCartItemCount(0); // Reset cart count if logged out
+        setCartItemCount(0);
         return;
       }
 
@@ -90,7 +79,7 @@ const Navbar = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${currentToken}`, // Use the potentially updated token
+            Authorization: `Bearer ${currentToken}`,
           },
         });
 
@@ -99,83 +88,69 @@ const Navbar = () => {
           // Safely calculate item count: check if 'items' is an array
           const itemCount = Array.isArray(data?.items)
             ? data.items.reduce(
-                (sum, item) => sum + (Number(item?.quantity) || 0), // Ensure quantity is treated as a number
-                0
+                // ***** FIX HERE *****
+                // Add ': number' to sum and type 'item' using CartItem type
+                (sum: number, item: CartItem) => sum + (Number(item?.quantity) || 0),
+                0 // Initial value for sum
               )
-            : 0; // Default to 0 if 'items' is not an array
+            : 0;
           setCartItemCount(itemCount);
         } else {
           console.error("Failed to fetch cart:", res.status, res.statusText);
-          setCartItemCount(0); // Reset count on failure
+          setCartItemCount(0);
         }
       } catch (error) {
         console.error("Error fetching cart:", error);
-        setCartItemCount(0); // Reset count on error
+        setCartItemCount(0);
       }
     };
 
     // --- Initial Execution ---
     if (token) {
-      checkAdmin(token); // Check admin status if logged in
-      fetchCartData(); // Fetch cart data if logged in
+      checkAdmin(token);
+      fetchCartData();
     } else {
-      // Ensure states are correctly reset if no token on mount
       setIsAdmin(false);
       setCartItemCount(0);
     }
 
     // --- Event Listener for Cart Updates ---
-    // Listens for a custom event that should be dispatched elsewhere when the cart changes
     window.addEventListener("cartUpdated", fetchCartData);
 
     // --- Cleanup Function ---
-    // Removes the event listener when the component unmounts
     return () => {
       window.removeEventListener("cartUpdated", fetchCartData);
     };
-
-    // Empty dependency array ensures this effect runs only once on mount
-    // and the cleanup runs on unmount. Functions defined inside are stable.
-  }, []);
+  }, []); // Empty dependency array: Run on mount only
 
   // --- Handler Functions ---
-
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     setIsLoggedIn(false);
     setIsAdmin(false);
-    setCartItemCount(0); // Explicitly reset cart count
-    setIsOpen(false); // Close mobile menu if open
-    // Optionally dispatch 'cartUpdated' if other components rely solely on it,
-    // but resetting state directly is often sufficient for the Navbar itself.
-    // window.dispatchEvent(new Event('cartUpdated'));
-    router.push("/login"); // Redirect to login page
+    setCartItemCount(0);
+    setIsOpen(false);
+    router.push("/login");
   };
 
   const handleAdminClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // Prevent navigation if still checking admin status
     if (isCheckingAdmin) {
-      // Optionally show a brief message or just do nothing
       console.log("Still verifying admin status...");
       return;
     }
-
     if (!isLoggedIn) {
       router.push("/login");
       return;
     }
-
     if (isAdmin) {
       router.push("/admin");
     } else {
-      // Consider using a more user-friendly notification system than alert()
       alert("You are not authorized to access the admin panel.");
     }
   };
 
   // --- Component JSX ---
-
   return (
     <nav className="fixed top-0 left-0 w-full bg-white dark:bg-gray-900 shadow-md z-50">
       <div className="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
@@ -189,61 +164,24 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-          <Link
-            href="/"
-            className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out"
-          >
-            Home
-          </Link>
-          <Link
-            href="/about"
-            className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out"
-          >
-            About
-          </Link>
-          <Link
-            href="/products"
-            className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out"
-          >
-            Products
-          </Link>
-          <Link
-            href="/contact"
-            className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out"
-          >
-            Contact
-          </Link>
+          <Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out">Home</Link>
+          <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out">About</Link>
+          <Link href="/products" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out">Products</Link>
+          <Link href="/contact" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out">Contact</Link>
 
-          {/* Admin Link - Show only if logged in and is an admin */}
+          {/* Admin Link */}
           {isLoggedIn && isAdmin && (
-            <button
-              onClick={handleAdminClick}
-              disabled={isCheckingAdmin} // Disable while checking status
-              className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <button onClick={handleAdminClick} disabled={isCheckingAdmin} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
               Admin
             </button>
           )}
 
           {/* Auth Button */}
           {isLoggedIn ? (
-            <Button
-              variant="destructive"
-              onClick={handleLogout}
-              size="sm" // Use consistent sizing
-              className="px-4 py-2" // Ensure consistent padding
-            >
-              Logout
-            </Button>
+            <Button variant="destructive" onClick={handleLogout} size="sm" className="px-4 py-2">Logout</Button>
           ) : (
             <Link href="/login">
-              <Button
-                variant="default" // Often blue by default in shadcn
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2" // Explicit styling if needed
-              >
-                Login
-              </Button>
+              <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">Login</Button>
             </Link>
           )}
 
@@ -262,7 +200,6 @@ const Navbar = () => {
 
         {/* Mobile Menu Button & Cart */}
         <div className="flex md:hidden items-center space-x-2">
-          {/* Cart Icon (Mobile) */}
           <Link href="/cart" className="relative" aria-label="Shopping Cart">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -274,18 +211,8 @@ const Navbar = () => {
             )}
           </Link>
 
-          {/* Hamburger Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? (
-              <X className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-            ) : (
-              <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
-            )}
+          <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
+            {isOpen ? <X className="w-6 h-6 text-gray-700 dark:text-gray-300" /> : <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />}
           </Button>
         </div>
       </div>
@@ -294,45 +221,14 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg pb-4">
           <div className="px-4 pt-2 pb-3 space-y-1">
-            <Link
-              href="/"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={() => setIsOpen(false)}
-            >
-              About
-            </Link>
-            <Link
-              href="/products"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={() => setIsOpen(false)}
-            >
-              Products
-            </Link>
-            <Link
-              href="/contact"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={() => setIsOpen(false)}
-            >
-              Contact
-            </Link>
+            <Link href="/" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsOpen(false)}>Home</Link>
+            <Link href="/about" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsOpen(false)}>About</Link>
+            <Link href="/products" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsOpen(false)}>Products</Link>
+            <Link href="/contact" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsOpen(false)}>Contact</Link>
 
-            {/* Admin Link in Mobile - Show if logged in and admin */}
+            {/* Admin Link in Mobile */}
             {isLoggedIn && isAdmin && (
-              <button
-                onClick={(e) => {
-                  handleAdminClick(e);
-                  setIsOpen(false); // Close menu after clicking
-                }}
-                disabled={isCheckingAdmin}
-                className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
-              >
+              <button onClick={(e) => { handleAdminClick(e); setIsOpen(false); }} disabled={isCheckingAdmin} className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50">
                 Admin
               </button>
             )}
@@ -340,27 +236,10 @@ const Navbar = () => {
           {/* Auth Button in Mobile Menu */}
           <div className="border-t border-gray-200 dark:border-gray-700 px-4 pt-4 pb-2">
             {isLoggedIn ? (
-              <Button
-                variant="destructive"
-                onClick={handleLogout} // handleLogout already closes menu if needed
-                className="w-full"
-                size="sm"
-              >
-                Logout
-              </Button>
+              <Button variant="destructive" onClick={handleLogout} className="w-full" size="sm">Logout</Button>
             ) : (
-              <Link
-                href="/login"
-                className="block w-full"
-                onClick={() => setIsOpen(false)}
-              >
-                <Button
-                  variant="default"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                  size="sm"
-                >
-                  Login
-                </Button>
+              <Link href="/login" className="block w-full" onClick={() => setIsOpen(false)}>
+                <Button variant="default" className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="sm">Login</Button>
               </Link>
             )}
           </div>
