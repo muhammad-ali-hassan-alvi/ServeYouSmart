@@ -1,8 +1,9 @@
-"use client"
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -20,59 +21,62 @@ interface ProductGridProps {
 
 const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   const router = useRouter();
-  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
+    {}
+  );
   const [error, setError] = useState<string | null>(null);
 
   const addToCart = async (productId: string) => {
     // Get token from sessionStorage
-    const token = sessionStorage.getItem('token');
-    
+    const token = sessionStorage.getItem("token");
+
     if (!token) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
 
     try {
-      setLoadingStates(prev => ({ ...prev, [productId]: true }));
+      setLoadingStates((prev) => ({ ...prev, [productId]: true }));
       setError(null);
 
-      const response = await fetch('http://localhost:5000/api/cart/items', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/cart/items", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           productId,
           quantity: 1, // Default quantity to 1
-          category: 'Gadget' // Hardcoded as 'Gadget' for this component
-        })
+          category: "Gadget", // Hardcoded as 'Gadget' for this component
+        }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to add to cart');
+        throw new Error(data.message || "Failed to add to cart");
       }
 
       // Dispatch cart update event
-      window.dispatchEvent(new CustomEvent('cartUpdated', {
-        detail: {
-          productId,
-          action: 'add'
-        }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("cartUpdated", {
+          detail: {
+            productId,
+            action: "add",
+          },
+        })
+      );
 
       // Show success feedback
-      console.log('Gadget added to cart:', data);
+      console.log("Gadget added to cart:", data);
       toast.success("Item Successfully Added to Cart");
-      
     } catch (err) {
-      console.error('Add to cart error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to add to cart');
+      console.error("Add to cart error:", err);
+      setError(err instanceof Error ? err.message : "Failed to add to cart");
       toast.error(err instanceof Error ? err.message : "Add to cart failed");
     } finally {
-      setLoadingStates(prev => ({ ...prev, [productId]: false }));
+      setLoadingStates((prev) => ({ ...prev, [productId]: false }));
     }
   };
 
@@ -80,9 +84,11 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
     <div className="bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Our Best Selling Gadgets Products</h2>
-          <Link 
-            href="/gadgets" 
+          <h2 className="text-3xl font-bold text-gray-900">
+            Our Best Selling Gadgets Products
+          </h2>
+          <Link
+            href="/gadgets"
             className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
           >
             View all Gadgets →
@@ -101,19 +107,23 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {products.slice(0, 10).map((product) => (
-            <div 
-              key={product._id} 
+            <div
+              key={product._id}
               className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
             >
               <div className="relative aspect-square w-full">
-                <img
-                  src={product.images[0] || '/placeholder-product.jpg'}
+                <Image
+                  width={300} // Add width
+                  height={300} // Add height
+                  src={product.images[0] || "/placeholder-product.jpg"}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
                 {product.stock <= 0 && (
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">Out of Stock</span>
+                    <span className="text-white font-bold text-lg">
+                      Out of Stock
+                    </span>
                   </div>
                 )}
               </div>
@@ -130,11 +140,13 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
                     ${product.price.toFixed(2)}
                   </span>
                   {product.stock > 0 && (
-                    <button 
+                    <button
                       onClick={() => addToCart(product._id)}
                       disabled={loadingStates[product._id]}
                       className={`bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                        loadingStates[product._id] ? 'opacity-75 cursor-not-allowed' : ''
+                        loadingStates[product._id]
+                          ? "opacity-75 cursor-not-allowed"
+                          : ""
                       }`}
                     >
                       {loadingStates[product._id] ? (
@@ -162,7 +174,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
                           Adding...
                         </span>
                       ) : (
-                        'Add to Cart'
+                        "Add to Cart"
                       )}
                     </button>
                   )}

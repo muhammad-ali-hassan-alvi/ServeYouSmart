@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 type Product = {
   _id: string;
@@ -277,7 +278,9 @@ export default function CartPage() {
                     <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
                       <div className="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center">
                         {item.product.image ? (
-                          <img
+                          <Image
+                            width={300} // Add width
+                            height={300} // Add height
                             src={item.product.image}
                             alt={item.product.name}
                             className="w-full h-full object-cover rounded-md"

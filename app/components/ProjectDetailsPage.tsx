@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import Image from "next/image";
 
 type ProductCategory =
   | "Test"
@@ -222,7 +223,7 @@ export default function ProductDetailsPage() {
                       : "border-transparent"
                   }`}
                 >
-                  <img
+                  <Image
                     src={image}
                     alt={`${product.name} view ${index + 1}`}
                     width={64}
@@ -235,7 +236,7 @@ export default function ProductDetailsPage() {
 
             {/* Main image */}
             <div className="flex-1 bg-white rounded-lg overflow-hidden shadow">
-              <img
+              <Image
                 src={product.images[selectedImage]}
                 alt={product.name}
                 width={800}

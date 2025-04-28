@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import toast from 'react-hot-toast';
-
+import toast from "react-hot-toast";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -29,16 +29,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   const addToCart = async (productId: string, category: string) => {
     const token = sessionStorage.getItem("token");
     const userString = sessionStorage.getItem("user");
-  
+
     if (!token || !userString) {
       router.push("/login");
       return;
     }
-  
+
     try {
       setLoadingStates((prev) => ({ ...prev, [productId]: true }));
       setError(null);
-  
+
       // const user = JSON.parse(userString);
       const response = await fetch("http://localhost:5000/api/cart/items", {
         method: "POST",
@@ -52,16 +52,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
           category,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.message || "Failed to add to cart");
       }
-  
+
       // Dispatch custom event to notify Navbar
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-      
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+
       toast.success("Item added to cart!");
     } catch (err) {
       console.error("Add to cart error:", err);
@@ -104,7 +104,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
               className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
             >
               <div className="relative aspect-square w-full">
-                <img
+                <Image
+                  width={300} // Add width
+                  height={300} // Add height
                   src={product.images[0] || "/placeholder-product.jpg"}
                   alt={product.name}
                   className="w-full h-full object-cover"

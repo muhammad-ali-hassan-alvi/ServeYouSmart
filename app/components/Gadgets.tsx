@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -20,7 +21,9 @@ interface ProductGridProps {
 
 const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
   const router = useRouter();
-  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
+    {}
+  );
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
@@ -28,11 +31,23 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
   // Calculate pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   const addToCart = async (productId: string, category: string) => {
-    if (!["Test", "Interior", "Exterior", "Product", "Gadget", "Fragnance"].includes(category)) {
+    if (
+      ![
+        "Test",
+        "Interior",
+        "Exterior",
+        "Product",
+        "Gadget",
+        "Fragnance",
+      ].includes(category)
+    ) {
       setError("Invalid product category");
       return;
     }
@@ -94,7 +109,9 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Our Premium Collection</h2>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Our Premium Collection
+            </h2>
             <p className="text-gray-600 mt-2">
               Discover our curated selection of high-quality products
             </p>
@@ -134,16 +151,20 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
             >
               <Link href={`/gadgetdetails/${product._id}`} className="block">
                 <div className="relative aspect-square w-full">
-                  <img
+                  <Image
+                    width={300} // Add width
+                    height={300} // Add height
                     src={product.images[0] || "/placeholder-product.jpg"}
                     alt={product.name}
-                    fill = "true"
+                    // fill = "true"
                     className="object-cover"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                   {product.stock <= 0 && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">Out of Stock</span>
+                      <span className="text-white font-bold text-lg">
+                        Out of Stock
+                      </span>
                     </div>
                   )}
                   {product.stock > 0 && product.stock < 10 && (
@@ -155,7 +176,10 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
               </Link>
 
               <div className="p-5 flex flex-col flex-grow">
-                <Link href={`/gadgetdetails/${product._id}`} className="hover:underline">
+                <Link
+                  href={`/gadgetdetails/${product._id}`}
+                  className="hover:underline"
+                >
                   <div className="mb-2">
                     <span className="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide">
                       {product.category}
@@ -165,11 +189,11 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
                     {product.name}
                   </h3>
                 </Link>
-                
+
                 <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
                   {product.description}
                 </p>
-                
+
                 <div className="mt-auto">
                   <div className="flex justify-between items-center">
                     <span className="text-xl font-bold text-gray-900">
@@ -183,7 +207,9 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
                         }}
                         disabled={loadingStates[product._id]}
                         className={`relative inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
-                          loadingStates[product._id] ? "opacity-75 cursor-not-allowed" : ""
+                          loadingStates[product._id]
+                            ? "opacity-75 cursor-not-allowed"
+                            : ""
                         }`}
                       >
                         {loadingStates[product._id] ? (
@@ -244,10 +270,13 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
             <div>
               <p className="text-sm text-gray-700">
                 Showing{" "}
-                <span className="font-medium">{indexOfFirstProduct + 1}</span> to{" "}
+                <span className="font-medium">{indexOfFirstProduct + 1}</span>{" "}
+                to{" "}
                 <span className="font-medium">
                   {Math.min(indexOfLastProduct, products.length)}
-                </span> of <span className="font-medium">{products.length}</span> products
+                </span>{" "}
+                of <span className="font-medium">{products.length}</span>{" "}
+                products
               </p>
             </div>
             <div className="flex space-x-2">

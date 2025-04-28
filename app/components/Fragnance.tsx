@@ -1,8 +1,9 @@
-"use client"
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -20,7 +21,9 @@ interface ProductGridProps {
 
 const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
   const router = useRouter();
-  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
+    {}
+  );
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
@@ -28,59 +31,73 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
   // Calculate pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   const addToCart = async (productId: string, category: string) => {
-    if (!['Test', 'Interior', 'Exterior', 'Product', 'Gadget', 'Fragrance'].includes(category)) {
-      setError('Invalid product category');
+    if (
+      ![
+        "Test",
+        "Interior",
+        "Exterior",
+        "Product",
+        "Gadget",
+        "Fragrance",
+      ].includes(category)
+    ) {
+      setError("Invalid product category");
       return;
     }
 
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem("token");
     if (!token) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
 
     try {
-      setLoadingStates(prev => ({ ...prev, [productId]: true }));
+      setLoadingStates((prev) => ({ ...prev, [productId]: true }));
       setError(null);
 
-      const response = await fetch('http://localhost:5000/api/cart/items', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/cart/items", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           productId,
           quantity: 1,
-          category
-        })
+          category,
+        }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to add to cart');
+        throw new Error(data.message || "Failed to add to cart");
       }
 
       // Dispatch custom event to notify Navbar and other components
-      window.dispatchEvent(new CustomEvent('cartUpdated', {
-        detail: {
-          productId,
-          action: 'add'
-        }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("cartUpdated", {
+          detail: {
+            productId,
+            action: "add",
+          },
+        })
+      );
 
       toast.success("Item successfully added to cart");
     } catch (err) {
-      console.error('Add to cart error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to add to cart');
+      console.error("Add to cart error:", err);
+      setError(err instanceof Error ? err.message : "Failed to add to cart");
       toast.error(err instanceof Error ? err.message : "Add to cart failed");
     } finally {
-      setLoadingStates(prev => ({ ...prev, [productId]: false }));
+      setLoadingStates((prev) => ({ ...prev, [productId]: false }));
     }
   };
 
@@ -91,11 +108,15 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Our Premium Collection</h2>
-            <p className="text-gray-600 mt-2">Discover our curated selection of high-quality products</p>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Our Premium Collection
+            </h2>
+            <p className="text-gray-600 mt-2">
+              Discover our curated selection of high-quality products
+            </p>
           </div>
-          <Link 
-            href="/products" 
+          <Link
+            href="/products"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
           >
             Explore All Products
@@ -105,8 +126,16 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
         {error && (
           <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
             <div className="flex items-center">
-              <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 text-red-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
               <p className="ml-3 text-sm text-red-700">{error}</p>
             </div>
@@ -115,21 +144,28 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {currentProducts.map((product) => (
-            <div 
-              key={product._id} 
+            <div
+              key={product._id}
               className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full"
             >
               {/* Product Image with Link to Details */}
-              <Link href={`/fragnancedetails/${product._id}`} className="relative aspect-square w-full block">
-                <img
-                  src={product.images[0] || '/placeholder-product.jpg'}
+              <Link
+                href={`/fragnancedetails/${product._id}`}
+                className="relative aspect-square w-full block"
+              >
+                <Image
+                  width={300} // Add width
+                  height={300} // Add height
+                  src={product.images[0] || "/placeholder-product.jpg"}
                   alt={product.name}
                   className="object-cover w-full h-full"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
                 {product.stock <= 0 && (
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">Out of Stock</span>
+                    <span className="text-white font-bold text-lg">
+                      Out of Stock
+                    </span>
                   </div>
                 )}
                 {product.stock > 0 && product.stock < 10 && (
@@ -145,14 +181,14 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                     {product.category}
                   </span>
                 </div>
-                
+
                 {/* Product Name with Link to Details */}
                 <Link href={`/fragnancedetails/${product._id}`}>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-indigo-600 transition-colors">
                     {product.name}
                   </h3>
                 </Link>
-                
+
                 <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
                   {product.description}
                 </p>
@@ -163,20 +199,36 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                     </span>
                     <div className="flex gap-2">
                       {/* View Details Button */}
-                      <Link 
+                      <Link
                         href={`/fragnancedetails/${product._id}`}
                         className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
                       >
-                        <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        <svg
+                          className="-ml-1 mr-2 h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
                         </svg>
                         Details
                       </Link>
-                      
+
                       {/* Add to Cart Button */}
                       {product.stock > 0 && (
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -184,7 +236,9 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                           }}
                           disabled={loadingStates[product._id]}
                           className={`relative inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
-                            loadingStates[product._id] ? 'opacity-75 cursor-not-allowed' : ''
+                            loadingStates[product._id]
+                              ? "opacity-75 cursor-not-allowed"
+                              : ""
                           }`}
                         >
                           {loadingStates[product._id] ? (
@@ -213,8 +267,19 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                             </>
                           ) : (
                             <>
-                              <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              <svg
+                                className="-ml-1 mr-2 h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                />
                               </svg>
                               Add
                             </>
@@ -234,11 +299,14 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
           <div className="mt-12 flex items-center justify-between border-t border-gray-200 pt-6">
             <div>
               <p className="text-sm text-gray-700">
-                Showing <span className="font-medium">{indexOfFirstProduct + 1}</span> to{' '}
+                Showing{" "}
+                <span className="font-medium">{indexOfFirstProduct + 1}</span>{" "}
+                to{" "}
                 <span className="font-medium">
                   {Math.min(indexOfLastProduct, products.length)}
-                </span>{' '}
-                of <span className="font-medium">{products.length}</span> products
+                </span>{" "}
+                of <span className="font-medium">{products.length}</span>{" "}
+                products
               </p>
             </div>
             <div className="flex space-x-2">
@@ -247,13 +315,13 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                 disabled={currentPage === 1}
                 className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
                   currentPage === 1
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 Previous
               </button>
-              
+
               {/* Page numbers */}
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 // Show pages around current page
@@ -267,15 +335,15 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                 } else {
                   pageNum = currentPage - 2 + i;
                 }
-                
+
                 return (
                   <button
                     key={pageNum}
                     onClick={() => paginate(pageNum)}
                     className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md ${
                       currentPage === pageNum
-                        ? 'z-10 bg-indigo-600 border-indigo-500 text-white'
-                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                        ? "z-10 bg-indigo-600 border-indigo-500 text-white"
+                        : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     {pageNum}
@@ -294,8 +362,8 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                 disabled={currentPage === totalPages}
                 className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
                   currentPage === totalPages
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 Next

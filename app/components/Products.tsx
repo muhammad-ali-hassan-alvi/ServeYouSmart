@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 type ProductCategory =
   | "Test"
@@ -323,7 +324,9 @@ const ProductCard: React.FC<{
   <div className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full">
     <Link href={`/productdetails/${product._id}`}>
       <div className="relative aspect-square w-full">
-        <img
+        <Image
+          width={300} // Add width
+          height={300} // Add height
           src={product.images[0] || "/placeholder-product.jpg"}
           alt={product.name}
           className="object-cover w-full h-full"

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import Image from "next/image";
 
 // Reuse the Product type from your original implementation
 type ProductCategory = "Test" | "Interior" | "Exterior" | "Product" | "Gadget" | "Fragnance";
@@ -228,7 +229,7 @@ export default function GadgetDetailPage() {
                       : "border-transparent"
                   }`}
                 >
-                  <img
+                  <Image
                     src={image}
                     alt={`${product.name} view ${index + 1}`}
                     width={64}
@@ -240,7 +241,7 @@ export default function GadgetDetailPage() {
             </div>
 
             <div className="flex-1 bg-white rounded-lg overflow-hidden shadow">
-              <img
+              <Image
                 src={product.images[selectedImage]}
                 alt={product.name}
                 width={800}

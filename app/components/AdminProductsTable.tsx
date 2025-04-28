@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -229,7 +230,7 @@ export default function AdminProductsTable() {
                 <TableRow key={product._id}>
                   <TableCell>
                     <div className="relative h-12 w-12">
-                      <img
+                      <Image
                         src={product.images[0] || "/placeholder-product.jpg"}
                         alt={product.name}
                         className="rounded-md object-cover h-full w-full"
@@ -399,7 +400,7 @@ export default function AdminProductsTable() {
                 />
                 {imagePreview && (
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={imagePreview}
                       alt="Preview"
                       className="h-32 w-32 object-cover rounded-md"
