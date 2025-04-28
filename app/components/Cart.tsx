@@ -12,6 +12,7 @@ type Product = {
   price: number;
   stock: number;
   category: string;
+  image?: string;
 };
 
 type CartItem = {
