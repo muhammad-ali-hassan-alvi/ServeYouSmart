@@ -230,7 +230,7 @@ export default function AdminFragranceTable() {
                 <TableRow key={fragrance._id}>
                   <TableCell>
                     <div className="relative h-12 w-12">
-                      <Image
+                      <img
                         src={fragrance.images[0] || "/placeholder-fragrance.jpg"}
                         alt={fragrance.name}
                         className="rounded-md object-cover h-full w-full"
@@ -400,7 +400,7 @@ export default function AdminFragranceTable() {
                 />
                 {imagePreview && (
                   <div className="mt-2">
-                    <Image
+                    <img
                       src={imagePreview}
                       alt="Preview"
                       className="h-32 w-32 object-cover rounded-md"

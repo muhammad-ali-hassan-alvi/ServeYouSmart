@@ -168,6 +168,7 @@ const Navbar = () => {
           <Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out">About</Link>
           <Link href="/products" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out">Products</Link>
           <Link href="/contact" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out">Contact</Link>
+          <Link href="http://localhost:3001/appointment" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition duration-150 ease-in-out py-2 px-2">Book an Appointment</Link>
 
           {/* Admin Link */}
           {isLoggedIn && isAdmin && (

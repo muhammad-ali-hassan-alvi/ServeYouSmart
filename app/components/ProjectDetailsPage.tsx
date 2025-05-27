@@ -285,7 +285,7 @@ export default function ProductDetailsPage() {
                         : "border-gray-200 hover:border-gray-400"
                     }`}
                   >
-                    <Image
+                    <img
                       src={image}
                       alt={`${product.name} view ${index + 1}`}
                       width={64}
@@ -300,7 +300,7 @@ export default function ProductDetailsPage() {
             {/* Main image */}
             <div className="flex-1 bg-white rounded-lg overflow-hidden shadow aspect-square">
               {product.images && product.images.length > 0 ? (
-                <Image
+                <img
                   src={product.images[selectedImage]}
                   alt={product.name}
                   width={800} // Provide appropriate base width/height for aspect ratio

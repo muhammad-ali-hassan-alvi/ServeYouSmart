@@ -153,7 +153,7 @@ const Fragnance: React.FC<ProductGridProps> = ({ products }) => {
                 href={`/fragnancedetails/${product._id}`}
                 className="relative aspect-square w-full block"
               >
-                <Image
+                <img
                   width={300} // Add width
                   height={300} // Add height
                   src={product.images[0] || "/placeholder-product.jpg"}

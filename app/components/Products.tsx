@@ -324,7 +324,7 @@ const ProductCard: React.FC<{
   <div className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full">
     <Link href={`/productdetails/${product._id}`}>
       <div className="relative aspect-square w-full">
-        <Image
+        <img
           width={300} // Add width
           height={300} // Add height
           src={product.images[0] || "/placeholder-product.jpg"}

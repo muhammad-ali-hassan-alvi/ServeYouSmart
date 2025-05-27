@@ -179,7 +179,7 @@ export default function CartPage() {
     if (!token) return toast.error("Authentication token missing");
     try {
       setLoading(true);
-      const response = await fetch("/api/carts", {
+      const response = await fetch("/api/carts/", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -261,13 +261,13 @@ export default function CartPage() {
                   {cart.items.length}{" "}
                   {cart.items.length === 1 ? "Item" : "Items"} in Cart
                 </h3>
-                <button
+                {/* <button
                   onClick={clearCart}
                   disabled={loading}
                   className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
                 >
                   {loading ? "Clearing..." : "Clear Cart"}
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -278,7 +278,7 @@ export default function CartPage() {
                     <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
                       <div className="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center">
                         {item.product.image ? (
-                          <Image
+                          <img
                             width={300} // Add width
                             height={300} // Add height
                             src={item.product.image}

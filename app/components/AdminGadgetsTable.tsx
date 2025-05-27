@@ -230,7 +230,7 @@ export default function AdminGadgetsTable() {
                 <TableRow key={gadget._id}>
                   <TableCell>
                     <div className="relative h-12 w-12">
-                      <Image
+                      <img
                         src={gadget.images[0] || "/placeholder-gadget.jpg"}
                         alt={gadget.name}
                         className="rounded-md object-cover h-full w-full"
@@ -400,7 +400,7 @@ export default function AdminGadgetsTable() {
                 />
                 {imagePreview && (
                   <div className="mt-2">
-                    <Image
+                    <img
                       src={imagePreview}
                       alt="Preview"
                       className="h-32 w-32 object-cover rounded-md"

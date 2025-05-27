@@ -11,7 +11,7 @@ const AboutUs = () => {
     <div className="bg-white dark:bg-gray-900">
       {/* Hero Section */}
       <section className="relative h-96 w-full">
-        <Image
+        <img
           src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1583&q=80"
           alt="Premium Car Care Products"
           className="object-cover"
@@ -33,7 +33,7 @@ const AboutUs = () => {
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <Image
+            <img
               src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80"
               alt="Our Founder"
               width={600}
@@ -124,7 +124,7 @@ const AboutUs = () => {
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <div className="group relative overflow-hidden rounded-lg shadow-lg">
-            <Image
+            <img
               src="https://images.unsplash.com/photo-1600861195091-690c92f1d2cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80"
               alt="Car Fragrances"
               width={400}
@@ -141,7 +141,7 @@ const AboutUs = () => {
             </div>
           </div>
           <div className="group relative overflow-hidden rounded-lg shadow-lg">
-            <Image
+            <img
               src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80"
               alt="Car Polishes"
               width={400}
@@ -158,7 +158,7 @@ const AboutUs = () => {
             </div>
           </div>
           <div className="group relative overflow-hidden rounded-lg shadow-lg">
-            <Image
+            <img
               src="https://images.unsplash.com/photo-1489824904134-891ab64532f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80"
               alt="Car Gadgets"
               width={400}

@@ -224,7 +224,7 @@ export default function FragranceDetailPage() {
                       : "border-transparent"
                   }`}
                 >
-                  <Image
+                  <img
                     src={image}
                     alt={`${product.name} view ${index + 1}`}
                     width={64}
@@ -236,7 +236,7 @@ export default function FragranceDetailPage() {
             </div>
 
             <div className="flex-1 bg-white rounded-lg overflow-hidden shadow">
-              <Image
+              <img
                 src={product.images[selectedImage]}
                 alt={product.name}
                 width={800}

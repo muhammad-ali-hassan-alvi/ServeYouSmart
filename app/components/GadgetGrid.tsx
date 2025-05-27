@@ -112,7 +112,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
               className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
             >
               <div className="relative aspect-square w-full">
-                <Image
+                <img
                   width={300} // Add width
                   height={300} // Add height
                   src={product.images[0] || "/placeholder-product.jpg"}

@@ -151,7 +151,7 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
             >
               <Link href={`/gadgetdetails/${product._id}`} className="block">
                 <div className="relative aspect-square w-full">
-                  <Image
+                  <img
                     width={300} // Add width
                     height={300} // Add height
                     src={product.images[0] || "/placeholder-product.jpg"}
