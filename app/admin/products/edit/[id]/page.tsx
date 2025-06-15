@@ -42,7 +42,7 @@ export default function EditProductPage() {
     const fetchProduct = async () => {
       try {
         // Using the product API endpoint
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/products/${id}`);
         if (!response.ok) {
           if (response.status === 404) {
             toast.error("Product not found.");
@@ -113,7 +113,7 @@ export default function EditProductPage() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/products/${id}`, {
         method: "PUT",
         headers: {
           // Content-Type is not set here, browser will set it for FormData
@@ -148,7 +148,7 @@ export default function EditProductPage() {
         router.push("/login"); // Or your login page
         return;
       }
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/products/${id}`, {
         method: "DELETE",
         headers: {
           // "Content-Type": "application/json", // Not needed for DELETE usually, but depends on server

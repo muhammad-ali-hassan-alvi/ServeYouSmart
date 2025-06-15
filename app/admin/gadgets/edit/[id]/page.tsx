@@ -33,7 +33,7 @@ export default function EditGadgetPage() {
   useEffect(() => {
     const fetchGadget = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/gadgets/${id}`);
+        const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/gadgets/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch gadget");
         }
@@ -80,7 +80,7 @@ export default function EditGadgetPage() {
         formData.append("image", newImage);
       }
 
-      const response = await fetch(`http://localhost:5000/api/gadgets/${id}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/gadgets/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -104,7 +104,7 @@ export default function EditGadgetPage() {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/gadgets/${id}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/gadgets/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

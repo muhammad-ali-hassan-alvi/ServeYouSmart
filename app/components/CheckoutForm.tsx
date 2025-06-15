@@ -62,7 +62,7 @@ export default function CheckoutPage() {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/cart/', {
+        const response = await fetch('https://serveyousmartbe-production.up.railway.app/api/cart/', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/orders/confirm', {
+      const response = await fetch('https://serveyousmartbe-production.up.railway.app/api/orders/confirm', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

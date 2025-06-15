@@ -48,7 +48,7 @@ const Navbar = () => {
           return;
         }
         const response = await fetch(
-          `http://localhost:5000/api/users/${userId}`,
+          `https://serveyousmartbe-production.up.railway.app/api/users/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (response.ok) {
@@ -75,7 +75,7 @@ const Navbar = () => {
       }
 
       try {
-        const res = await fetch("http://localhost:5000/api/cart", {
+        const res = await fetch("https://serveyousmartbe-production.up.railway.app/api/cart", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

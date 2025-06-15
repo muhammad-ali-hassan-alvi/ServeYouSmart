@@ -5,7 +5,7 @@ import Fragnance from "../components/Fragnance";
 
 async function getProductData() {
   try {
-    const res = await fetch("http://localhost:5000/api/fragnance");
+    const res = await fetch("https://serveyousmartbe-production.up.railway.app/api/fragnance");
 
     if (!res.ok) {
       throw new Error("Failed to fetch fragnance");

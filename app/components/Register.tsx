@@ -42,7 +42,7 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/users/register', {
+      const response = await fetch('https://serveyousmartbe-production.up.railway.app/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

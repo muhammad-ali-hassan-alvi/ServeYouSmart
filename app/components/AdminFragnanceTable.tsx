@@ -62,7 +62,7 @@ export default function AdminFragranceTable() {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/fragnance?pageNumber=${page}&keyword=${searchTerm}`
+        `https://serveyousmartbe-production.up.railway.app/api/fragnance?pageNumber=${page}&keyword=${searchTerm}`
       );
       const data = await response.json();
       setFragrances(data.fragrances);
@@ -82,7 +82,7 @@ export default function AdminFragranceTable() {
     if (!fragranceToDelete) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/fragnance/${fragranceToDelete}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/fragnance/${fragranceToDelete}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export default function AdminFragranceTable() {
     formData.append("image", newFragrance.image);
 
     try {
-      const response = await fetch("http://localhost:5000/api/fragnance", {
+      const response = await fetch("https://serveyousmartbe-production.up.railway.app/api/fragnance", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,

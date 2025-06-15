@@ -55,7 +55,7 @@ const AdminContactMessagesTable = () => {
   const fetchMessages = useCallback(async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("http://localhost:5000/api/contact", {
+      const { data } = await axios.get("https://serveyousmartbe-production.up.railway.app/api/contact", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessages(data || []);
@@ -73,7 +73,7 @@ const AdminContactMessagesTable = () => {
 
   // const handleMarkAsRead = async (messageId) => {
   //   try {
-  //     await axios.get(`http://localhost:5000/api/contact/${messageId}`, {
+  //     await axios.get(`https://serveyousmartbe-production.up.railway.app/api/contact/${messageId}`, {
   //       headers: {
   //         Authorization: `Bearer ${token}`,
   //       },
@@ -87,7 +87,7 @@ const AdminContactMessagesTable = () => {
 
   const handleDeleteMessage = async (messageId: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/contact/${messageId}`, {
+      await axios.delete(`https://serveyousmartbe-production.up.railway.app/api/contact/${messageId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -52,7 +52,7 @@ export default function CartPage() {
         throw new Error("User not authenticated. Token missing.");
       }
 
-      const response = await fetch("http://localhost:5000/api/cart/", {
+      const response = await fetch("https://serveyousmartbe-production.up.railway.app/api/cart/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -101,7 +101,7 @@ export default function CartPage() {
     try {
       setUpdatingItems((prev) => ({ ...prev, [productId]: true }));
 
-      const response = await fetch(`http://localhost:5000/api/cart/items`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/cart/items`, {
         // Ensure URL is correct
         method: "POST", // API is likely expecting POST instead of PUT
         headers: {
@@ -143,7 +143,7 @@ export default function CartPage() {
       setUpdatingItems((prev) => ({ ...prev, [productId]: true }));
 
       const response = await fetch(
-        `http://localhost:5000/api/cart/items/${productId}`,
+        `https://serveyousmartbe-production.up.railway.app/api/cart/items/${productId}`,
         {
           method: "DELETE",
           headers: {

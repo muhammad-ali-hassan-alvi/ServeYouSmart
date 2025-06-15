@@ -62,7 +62,7 @@ const Gadgets: React.FC<ProductGridProps> = ({ products }) => {
       setLoadingStates((prev) => ({ ...prev, [productId]: true }));
       setError(null);
 
-      const response = await fetch("http://localhost:5000/api/cart/items", {
+      const response = await fetch("https://serveyousmartbe-production.up.railway.app/api/cart/items", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

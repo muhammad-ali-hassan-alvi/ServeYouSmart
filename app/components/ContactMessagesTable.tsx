@@ -25,7 +25,7 @@ export default function ContactMessageDetails() {
       setLoading(true);
       const token = sessionStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:5000/api/contact/${id}`,
+        `https://serveyousmartbe-production.up.railway.app/api/contact/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

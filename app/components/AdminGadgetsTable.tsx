@@ -62,7 +62,7 @@ export default function AdminGadgetsTable() {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/gadgets?pageNumber=${page}&keyword=${searchTerm}`
+        `https://serveyousmartbe-production.up.railway.app/api/gadgets?pageNumber=${page}&keyword=${searchTerm}`
       );
       const data = await response.json();
       setGadgets(data.gadgets);
@@ -82,7 +82,7 @@ export default function AdminGadgetsTable() {
     if (!gadgetToDelete) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/gadgets/${gadgetToDelete}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/gadgets/${gadgetToDelete}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export default function AdminGadgetsTable() {
     formData.append("image", newGadget.image);
 
     try {
-      const response = await fetch("http://localhost:5000/api/gadgets", {
+      const response = await fetch("https://serveyousmartbe-production.up.railway.app/api/gadgets", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,

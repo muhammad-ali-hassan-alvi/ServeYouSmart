@@ -8,7 +8,7 @@ import FragnanceGrid from "./components/FragnanceGrid";
 
 async function getProducts() {
   try {
-    const API_BASE = "http://localhost:5000/api";
+    const API_BASE = "https://serveyousmartbe-production.up.railway.app/api";
 
     const [productRes, gadgetRes, fragnanceRes] = await Promise.all([
       fetch(`${API_BASE}/products`),

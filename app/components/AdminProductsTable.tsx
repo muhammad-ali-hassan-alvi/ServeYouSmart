@@ -62,7 +62,7 @@ export default function AdminProductsTable() {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/products?pageNumber=${page}&keyword=${searchTerm}`
+        `https://serveyousmartbe-production.up.railway.app/api/products?pageNumber=${page}&keyword=${searchTerm}`
       );
       const data = await response.json();
       setProducts(data.products);
@@ -82,7 +82,7 @@ export default function AdminProductsTable() {
     if (!productToDelete) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productToDelete}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/products/${productToDelete}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export default function AdminProductsTable() {
     formData.append("image", newProduct.image);
 
     try {
-      const response = await fetch("http://localhost:5000/api/products", {
+      const response = await fetch("https://serveyousmartbe-production.up.railway.app/api/products", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,

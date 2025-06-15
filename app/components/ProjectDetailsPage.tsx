@@ -64,7 +64,7 @@ export default function ProductDetailsPage() {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/products/${id}`
+          `https://serveyousmartbe-production.up.railway.app/api/products/${id}`
         );
 
         if (!response.ok) {
@@ -149,7 +149,7 @@ export default function ProductDetailsPage() {
         ...(selectedSize && { size: selectedSize }),
       };
 
-      const response = await fetch("http://localhost:5000/api/cart/items", {
+      const response = await fetch("https://serveyousmartbe-production.up.railway.app/api/cart/items", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

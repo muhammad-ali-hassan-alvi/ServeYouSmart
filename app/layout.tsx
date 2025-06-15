@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Poppins } from "next/font/google";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
+import { Provider } from "react-redux";
+import { store } from "../store"; // Adjust the path to your store folder
+
 import "./globals.css";
 import Footer from "./components/Footer";
 
-// Properly load Poppins font with Next.js
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -37,9 +39,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
-        <main>{children}</main>
-        <Footer />
-        <Toaster position="top-right" reverseOrder={false} />
+        <Provider store={store}>
+          <main>{children}</main>
+          <Footer />
+          <Toaster position="top-right" reverseOrder={false} />
+        </Provider>
       </body>
     </html>
   );

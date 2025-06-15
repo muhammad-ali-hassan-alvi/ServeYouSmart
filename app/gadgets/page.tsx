@@ -5,7 +5,7 @@ import Gadgets from "../components/Gadgets";
 
 async function getProductData() {
     try {
-      const res = await fetch("http://localhost:5000/api/gadgets"); // Remove trailing slash for consistency
+      const res = await fetch("https://serveyousmartbe-production.up.railway.app/api/gadgets"); // Remove trailing slash for consistency
   
       if (!res.ok) {
         throw new Error("Failed to fetch products");

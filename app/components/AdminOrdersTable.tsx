@@ -49,7 +49,7 @@ const AdminOrdersTable = () => {
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("http://localhost:5000/api/orders/all", {
+      const { data } = await axios.get("https://serveyousmartbe-production.up.railway.app/api/orders/all", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

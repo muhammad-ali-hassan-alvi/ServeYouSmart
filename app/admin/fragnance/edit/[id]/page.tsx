@@ -44,7 +44,7 @@ export default function EditFragrancePage() {
     const fetchFragrance = async () => {
       try {
         // Using the fragrance API endpoint
-        const response = await fetch(`http://localhost:5000/api/fragnance/${id}`);
+        const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/fragnance/${id}`);
         if (!response.ok) {
           if (response.status === 404) {
             toast.error("Fragrance not found.");
@@ -114,7 +114,7 @@ export default function EditFragrancePage() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/fragrances/${id}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/fragrances/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -148,7 +148,7 @@ export default function EditFragrancePage() {
         router.push("/login");
         return;
       }
-      const response = await fetch(`http://localhost:5000/api/fragrances/${id}`, {
+      const response = await fetch(`https://serveyousmartbe-production.up.railway.app/api/fragrances/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
