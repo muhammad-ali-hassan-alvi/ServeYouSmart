@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-// REMOVE THIS LINE: import Head from 'next/head';
+import Head from 'next/head';
 import Link from 'next/link';
 
 const Login = () => {
@@ -17,6 +17,7 @@ const Login = () => {
       setError(null);
   
       try {
+        // Replace with your actual API endpoint
         const response = await fetch('https://serveyousmartbe-production.up.railway.app/api/users/login', {
           method: 'POST',
           headers: {
@@ -31,6 +32,7 @@ const Login = () => {
           throw new Error(data.message || 'Login failed');
         }
   
+        // Store token and user data in sessionStorage
         sessionStorage.setItem('token', data.token);
         sessionStorage.setItem('user', JSON.stringify({
           id: data._id,
@@ -38,6 +40,7 @@ const Login = () => {
           email: data.email
         }));
   
+        // Redirect to dashboard or home page
         router.push('/');
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -48,9 +51,10 @@ const Login = () => {
   
     return (
       <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-        {/*
-          THE <Head> COMPONENT HAS BEEN REMOVED FROM HERE
-        */}
+        <Head>
+          <title>Login</title>
+          <meta name="description" content="Login to your account" />
+        </Head>
   
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -71,7 +75,6 @@ const Login = () => {
             )}
   
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* ... rest of your form ... */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email address
@@ -179,7 +182,7 @@ const Login = () => {
   
               <div className="mt-6">
                 <p className="text-center text-sm text-gray-600">
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
                     Register here
                   </Link>
